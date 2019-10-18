@@ -6,11 +6,39 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+<form>
+    <div class="form-group">
+        <label for="titleInput">Title</label>
+        <input type="text" class="form-control" id="titleInput" placeholder="Enter title">
+    </div>
+    <div class="form-group">
+        <label for="descriptionInput">Description</label>
+        <input type="text" class="form-control" id="descriptionInput" placeholder="Enter description">
+    </div>
+    <div class="form-group">
+        <label for="messageInput">Message</label>
+        <input type="text" class="form-control" id="messageInput" placeholder="Enter message">
+    </div>
+    <div class="form-group">
+        <label for="dateInput">Date</label>
+        <input type="datetime" class="form-control" id="dateInput" placeholder="Enter date">
+    </div>
+    <div class="form-group form-check">
+        <label class="form-check-label" for="submitButton">Submit</label>
+    </div>
+    <button type="submit" class="btn btn-primary" @onclick="Submit">Submit</button>
+</form>
+
 @code {
     int currentCount = 0;
 
     void IncrementCount()
     {
         currentCount++;
+    }
+
+    void Submit()
+    {
+
     }
 }
