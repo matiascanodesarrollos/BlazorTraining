@@ -1,0 +1,130 @@
+﻿@typeparam TItem
+
+@if (Items == null)
+{
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>@TableHeader</tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Items)
+            {
+                <tr>@RowTemplate(item)</tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>@TableFooter</tr>
+        </tfoot>
+    </table>
+    <nav aria-label="Pagination">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" aria-label="Previous" @onclick="PreviousPage">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+            @for (int i = 1; i <= PagesCount; i++)
+            {
+                var index = i;
+                <li class="page-item @IsActivePage(index)"><a class="page-link" @onclick="() => ChangePage(index)">@index</a></li>
+            }
+            <li class="page-item">
+                <a class="page-link" aria-label="Next" @onclick="NextPage">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}
+
+@code {
+    int _pageSize = 6;
+    int _currentPage = 1;
+
+    [Parameter]
+    public RenderFragment TableHeader { get; set; }
+
+    [Parameter]
+    public RenderFragment<TItem> RowTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment TableFooter { get; set; }
+
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; }
+
+    [Parameter]
+    public int ItemsCount { get; set; }
+
+    [Parameter]
+    public Func<Task> PageChangeCallBack { get; set; }
+
+    [Parameter]
+    public int PageSize {
+        get
+        {
+            return _pageSize;
+        }
+        set
+        {
+            _pageSize = value;
+        }
+    }
+
+    public int CurrentPage
+    {
+        get
+        {
+            return _currentPage;
+        }
+    }
+
+
+    int PagesCount
+    {
+        get
+        {
+            var _pageCount = (int) (ItemsCount / _pageSize);
+            if(ItemsCount % _pageSize != 0) _pageCount++;
+            return _pageCount;
+        }
+    }
+
+    string IsActivePage(int index)
+    {
+        return index == _currentPage ? "active" : "";
+    }
+
+    public async Task ChangePage(int p)
+    {
+        _currentPage = p;
+        await PageChangeCallBack.Invoke();
+    }
+
+    public async Task PreviousPage()
+    {
+        if(_currentPage > 1)
+        {
+            _currentPage--;
+            await PageChangeCallBack.Invoke();
+        }
+    }
+
+    public async Task NextPage()
+    {
+        if(_currentPage < PagesCount)
+        {
+            _currentPage++;
+            await PageChangeCallBack.Invoke();
+        }
+    }
+
+}

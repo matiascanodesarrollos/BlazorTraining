@@ -1,0 +1,162 @@
+﻿@page "/"
+@page "/events"
+@inject IRepository<EventSubscription.Model.Event> _eventRepository;
+
+<TabSet @ref="_tabSet">
+    <Tab Title="Search">
+        <TableTemplate @ref="_tableRef" Items="_eventList" Context="evnt" ItemsCount="_itemsCount" PageChangeCallBack="FillTable">
+            <TableHeader>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>#</th>
+                <th>#</th>
+            </TableHeader>
+            <RowTemplate>
+                <th>@evnt.Title</th>
+                <th>@evnt.Description</th>
+                <th>@evnt.Message</th>
+                <th>@evnt.Date.Value.ToShortDateString()</th>
+                <th><button type="button" class="btn btn-success" @onclick="() => MoveToEditPage(evnt)">Edit</button></th>
+                <th><button type="button" class="btn btn-danger" @onclick="async () => await DeleteModel(evnt.Id)">Delete</button></th>
+            </RowTemplate>
+        </TableTemplate>
+    </Tab>
+    <Tab Title="New/Edit" ActivateCallback="SetAsNew">
+        <EditForm Model="@_model" OnValidSubmit="@SaveModel">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="titleInput">Title</label>
+                <InputText id="titleInput" class="form-control" placeholder="Enter title" @bind-Value="_model.Title" />
+            </div>
+
+            <div class="form-group">
+                <label for="descriptionInput">Description</label>
+                <InputText id="descriptionInput" class="form-control" placeholder="Enter description" @bind-Value="_model.Description" />
+            </div>
+
+            <div class="form-group">
+                <label for="messageInput">Message</label>
+                <InputText id="messageInput" class="form-control" placeholder="Enter message" @bind-Value="_model.Message" />
+            </div>
+
+            <p>
+                <label for="dateInput">Date: </label>
+                <InputDate id="dateInput" @bind-Value="_model.Date" />
+            </p>
+
+            <button type="submit">Submit</button>
+
+        </EditForm>
+    </Tab>
+</TabSet>
+
+<Toast Message="@_toastMessage" @ref="_toast"></Toast>
+
+@code {
+    bool _isNew;
+    int _itemsCount;
+    Toast _toast;
+    TabSet _tabSet;
+    TableTemplate<EventSubscription.Model.Event> _tableRef;
+    EventSubscription.Model.Event _model = new EventSubscription.Model.Event();
+    IList<EventSubscription.Model.Event> _eventList;
+    string _toastMessage;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await FillTable();
+        }
+    }
+
+    void SetAsNew()
+    {
+        _isNew = true;
+        _model = new EventSubscription.Model.Event();
+    }
+
+    async Task SaveModel()
+    {
+        try
+        {
+            if (_isNew)
+            {
+                await _eventRepository.Insert(_model);
+            }
+            else
+            {
+                await _eventRepository.Edit(_model);
+            }
+            SetAsNew();            
+            _tabSet.SetActivateTab(0);
+            await FillTable();
+            await ShowToastInfo("The event was correctly modified.");
+            
+        }
+        catch (Exception ex)
+        {
+            await ShowToastError($"An error has occurred: {ex.Message}");
+        }
+
+
+    }
+
+    void MoveToEditPage(EventSubscription.Model.Event model)
+    {
+        _model = model;
+        _isNew = false;
+        _tabSet.SetActivateTab(1);
+    }
+
+    async Task DeleteModel(int id)
+    {
+        try
+        {
+            var _modelToDelete = new EventSubscription.Model.Event { Id = id };
+            await _eventRepository.Delete(_modelToDelete);
+            await FillTable();
+            await ShowToastInfo("The event was correctly deleted.");
+        }
+        catch (Exception ex)
+        {
+            await ShowToastError($"An error has occurred: {ex.Message}");
+        }
+
+    }
+
+
+    async Task FillTable()
+    {
+        try
+        {
+            _itemsCount = await _eventRepository.GetCount();
+            _eventList = await _eventRepository.GetAll(_tableRef.CurrentPage, _tableRef.PageSize);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await ShowToastError($"An error has occurred: {ex.Message}");
+        }
+
+    }
+
+    async Task ShowToastInfo(string message)
+    {
+        _toastMessage = message;
+        StateHasChanged();
+        await _toast.ShowInfo();
+    }
+
+    async Task ShowToastError(string message)
+    {
+        _toastMessage = message;
+        StateHasChanged();
+        await _toast.ShowError();
+    }
+
+}

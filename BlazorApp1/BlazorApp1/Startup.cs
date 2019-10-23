@@ -1,11 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Shared;
+using BlazorApp1.Data;
 
-namespace EventSubscriptionApp
+namespace BlazorApp1
 {
     public class Startup
     {
@@ -22,10 +28,7 @@ namespace EventSubscriptionApp
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-
-            //Configure dependecy injection per IClass and IRepository<T> convention
-            DependencyInjectionHelper.GetServices("EventSubscription.DLSService")
-                .ForEach(s => services.AddTransient(s.Item1,s.Item2));
+            services.AddSingleton<WeatherForecastService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

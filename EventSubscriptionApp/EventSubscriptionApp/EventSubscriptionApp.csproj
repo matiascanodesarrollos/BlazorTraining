@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EventSubcription.Model\EventSubcription.Model.csproj" />
+    <ProjectReference Include="..\EventSubscription.DLSService\EventSubscription.DLSService.csproj" />
+    <ProjectReference Include="..\EventSubscription.Model\EventSubscription.Model.csproj" />
+    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
 </Project>
