@@ -29,31 +29,31 @@
     [Parameter]
     public string BodyText { get; set; }
 
-    public void ShowConfirmation()
+    public async Task ShowConfirmation()
     {
         _titleText = "Confirmation";
-        Show();
+        await Show();
     }
 
-    public void ShowError()
+    public async Task ShowError()
     {
         _titleText = "Error";
-        Show();
+        await Show();
     }
 
-    void Show()
+    async Task Show()
     {
         _displayStatus = "block";
         _showStatus = "show";
-        StateHasChanged();
+        await base.InvokeAsync(StateHasChanged);
     }
 
-    public void Hide()
+    public async Task Hide()
     {
         _displayStatus = "none";
         _showStatus = "";
         CloseCallback?.Invoke();
-        StateHasChanged();
+        await base.InvokeAsync(StateHasChanged);
     }
 
 }

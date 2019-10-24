@@ -12,10 +12,10 @@
     async Task Show()
     {
         _showStatus = "show";
-        StateHasChanged();
+        await base.InvokeAsync(StateHasChanged);
         await Task.Delay(5000);
         _showStatus = "";
-        StateHasChanged();
+        await base.InvokeAsync(StateHasChanged);
     }
 
     public async Task ShowInfo()
