@@ -1,5 +1,7 @@
+using EventSubscription.DLSService.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +24,7 @@ namespace EventSubscriptionApp
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddDbContext<DbaContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
 
             //Configure dependecy injection per IClass and IRepository<T> convention
             DependencyInjectionHelper.GetServices("EventSubscription.DLSService")

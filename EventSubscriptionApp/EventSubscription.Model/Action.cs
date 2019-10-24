@@ -12,5 +12,10 @@ namespace EventSubscription.Model
         public Subscription Subscription { get; set; }
         [Required]
         public DateTime? Date { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj != null && obj is Action && this.Id == (obj as Action).Id;
+        }
     }
 }

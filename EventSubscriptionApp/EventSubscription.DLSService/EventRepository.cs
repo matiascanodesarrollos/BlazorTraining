@@ -10,65 +10,47 @@ namespace EventSubscription.DLSService
 {
     public class EventRepository : IRepository<Event>
     {
-        IDbaContextProvider _dbaContextProvider;
+        DbaContext _dbaContext;
 
-        public EventRepository(IDbaContextProvider dbaContextProvider)
+        public EventRepository(DbaContext dbaContext)
         {
-            _dbaContextProvider = dbaContextProvider ?? throw new ArgumentNullException(nameof(dbaContextProvider));
+            _dbaContext = dbaContext ?? throw new ArgumentNullException(nameof(dbaContext));
         }
 
         public async Task Delete(Event element)
         {
-            using (var dba = _dbaContextProvider.CreateNewContext())
-            {
-                dba.Events.Remove(element);
-                await dba.SaveChangesAsync();
-            }
+            _dbaContext.Events.Remove(element);
+            await _dbaContext.SaveChangesAsync();
         }
 
         public async Task<IList<Event>> GetAll()
         {
-            using (var dba = _dbaContextProvider.CreateNewContext())
-            {
-                return await dba.Events.ToListAsync();                
-            }
+            return await _dbaContext.Events.ToListAsync(); 
         }
 
         public async Task<IList<Event>> GetAll(int page, int pageSize)
         {
-            using (var dba = _dbaContextProvider.CreateNewContext())
-            {
-                return await dba.Events
+            return await _dbaContext.Events
                     .Skip(pageSize * (page - 1))
                     .Take(pageSize)
                     .ToListAsync();
-            }
         }
 
         public async Task<int> GetCount()
         {
-            using (var dba = _dbaContextProvider.CreateNewContext())
-            {
-                return await dba.Events.CountAsync();
-            }
+            return await _dbaContext.Events.CountAsync();
         }
 
         public async Task Insert(Event element)
         {
-            using (var dba = _dbaContextProvider.CreateNewContext())
-            {
-                dba.Events.Add(element);
-                await dba.SaveChangesAsync();
-            }
+            _dbaContext.Events.Add(element);
+             await _dbaContext.SaveChangesAsync();
         }
 
         public async Task Edit(Event element)
         {
-            using (var dba = _dbaContextProvider.CreateNewContext())
-            {
-                dba.Events.Update(element);
-                await dba.SaveChangesAsync();
-            }
+            _dbaContext.Events.Update(element);
+            await _dbaContext.SaveChangesAsync();
         }
 
 

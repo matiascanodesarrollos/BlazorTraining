@@ -19,7 +19,7 @@
                 <th>@evnt.Message</th>
                 <th>@evnt.Date.Value.ToShortDateString()</th>
                 <th><button type="button" class="btn btn-success" @onclick="() => MoveToEditPage(evnt)">Edit</button></th>
-                <th><button type="button" class="btn btn-danger" @onclick="async () => await DeleteModel(evnt.Id)">Delete</button></th>
+                <th><button type="button" class="btn btn-danger" @onclick="async () => await DeleteModel(evnt)">Delete</button></th>
             </RowTemplate>
         </TableTemplate>
     </Tab>
@@ -113,12 +113,11 @@
         _tabSet.SetActivateTab(1);
     }
 
-    async Task DeleteModel(int id)
+    async Task DeleteModel(EventSubscription.Model.Event model)
     {
         try
         {
-            var _modelToDelete = new EventSubscription.Model.Event { Id = id };
-            await _eventRepository.Delete(_modelToDelete);
+            await _eventRepository.Delete(model);
             await FillTable();
             await ShowToastInfo("The event was correctly deleted.");
         }

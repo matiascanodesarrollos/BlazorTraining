@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventSubscription.DLSServic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{EDFD5A60-92BF-474B-8DAA-843E7248C172}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSubscription.DLSServiceTests", "EventSubscription.DLSServiceTests\EventSubscription.DLSServiceTests.csproj", "{4DBF8B62-B3A1-4CEF-B5A7-9897267FF725}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{EDFD5A60-92BF-474B-8DAA-843E7248C172}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDFD5A60-92BF-474B-8DAA-843E7248C172}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDFD5A60-92BF-474B-8DAA-843E7248C172}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DBF8B62-B3A1-4CEF-B5A7-9897267FF725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DBF8B62-B3A1-4CEF-B5A7-9897267FF725}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DBF8B62-B3A1-4CEF-B5A7-9897267FF725}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DBF8B62-B3A1-4CEF-B5A7-9897267FF725}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
