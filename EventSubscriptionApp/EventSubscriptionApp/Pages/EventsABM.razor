@@ -1,6 +1,6 @@
 ﻿@page "/"
 @page "/events"
-@inject IRepository<EventSubscription.Model.Event> _eventRepository;
+@inject IUnitOfWork _unitOfWork;
 
 <TabSet @ref="_tabSet">
     <Tab Title="Search">
@@ -63,7 +63,7 @@
     TabSet _tabSet;
     TableTemplate<EventSubscription.Model.Event> _tableRef;
     EventSubscription.Model.Event _model = new EventSubscription.Model.Event();
-    IList<EventSubscription.Model.Event> _eventList;
+    IEnumerable<EventSubscription.Model.Event> _eventList;
     string _toastMessage;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -86,17 +86,14 @@
         {
             if (_isNew)
             {
-                await _eventRepository.Insert(_model);
+                _unitOfWork.Events.Add(_model);
             }
-            else
-            {
-                await _eventRepository.Edit(_model);
-            }
-            SetAsNew();            
+            await _unitOfWork.SaveAsync();
+            SetAsNew();
             _tabSet.SetActivateTab(0);
             await FillTable();
             await ShowToastInfo("The event was correctly modified.");
-            
+
         }
         catch (Exception ex)
         {
@@ -117,7 +114,8 @@
     {
         try
         {
-            await _eventRepository.Delete(model);
+            _unitOfWork.Events.Remove(model);
+            await _unitOfWork.SaveAsync();
             await FillTable();
             await ShowToastInfo("The event was correctly deleted.");
         }
@@ -133,8 +131,8 @@
     {
         try
         {
-            _itemsCount = await _eventRepository.GetCount();
-            _eventList = await _eventRepository.GetAll(_tableRef.CurrentPage, _tableRef.PageSize);
+            _itemsCount = await _unitOfWork.Events.GetCountAsync();
+            _eventList = await _unitOfWork.Events.GetAllAsync(_tableRef.CurrentPage, _tableRef.PageSize);
             StateHasChanged();
         }
         catch (Exception ex)

@@ -34,11 +34,11 @@ namespace Shared
                 if (implementationDictionary.ContainsKey(className)) result.Add(new Tuple<Type, Type>(s, implementationDictionary[className]));
             });
 
-            foreach(var repo in implementationDictionary.Where(x => x.Key.EndsWith("Repository")))
-            {
-                var interfaces = repo.Value.FindInterfaces((t,o) => t.Name.StartsWith("IRepository"),null);
-                if(interfaces.Length == 1) result.Add(new Tuple<Type, Type>(interfaces[0], repo.Value));
-            }
+            //foreach(var repo in implementationDictionary.Where(x => x.Key.EndsWith("Repository")))
+            //{
+            //    var interfaces = repo.Value.FindInterfaces((t,o) => t.Name.StartsWith("IRepository"),null);
+            //    if(interfaces.Length == 1) result.Add(new Tuple<Type, Type>(interfaces[0], repo.Value));
+            //}
 
             return result;
         }
