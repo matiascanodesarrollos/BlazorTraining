@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using EventSubscription.DLSService.RepositoryProviders;
+using System.Threading.Tasks;
 
 namespace EventSubscription.DLSService.Context
 {
@@ -6,11 +7,11 @@ namespace EventSubscription.DLSService.Context
     {
         protected readonly DbaContext _dbContext;
 
-        public UnitOfWork(DbaContext dbContext)
+        public UnitOfWork(DbaContext dbContext, IEventRepositoryProvider eventRepositoryProvider, IActionRepositoryProvider actionRepositoryProvider)
         {
             _dbContext = dbContext;
-            Events = new EventRepository(dbContext);
-            Actions = new ActionRepository(dbContext);
+            Events = eventRepositoryProvider.CreateRepository(dbContext);
+            Actions = actionRepositoryProvider.CreateRepository(dbContext);
         }
 
         public IEventRepository Events { get; private set; }

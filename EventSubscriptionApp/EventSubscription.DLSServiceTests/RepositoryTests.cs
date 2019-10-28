@@ -126,7 +126,7 @@ namespace EventSubscription.DLSServiceTests
         }
 
         [TestMethod()]
-        public void Insert_ShouldThowException_SameId()
+        public void Add_ShouldThowException_SameId()
         {
             Assert
                 .ThrowsException<InvalidOperationException>(() =>
@@ -134,6 +134,47 @@ namespace EventSubscription.DLSServiceTests
                     new Model.Event() { Id = 1, Description = "Description X", Message = "Message X", Title = "Title X", Date = DateTime.Now })
                 );
         }
-        
+
+        [TestMethod()]
+        public void Add_ShouldThowException_LackingFields()
+        {
+            Assert
+                .ThrowsException<InvalidOperationException>(() =>
+                _instance.Add(
+                    new Model.Event() { Id = 1, Message = "Message X", Title = "Title X", Date = DateTime.Now })
+                );
+        }
+
+        [TestMethod()]
+        public async Task FindAsync_ShouldFilter()
+        {
+            int expectedCount = 2;
+            var result = (await _instance.FindAsync((e) => e.Id <= expectedCount)).ToList();
+
+            Assert.AreEqual(expectedCount, result.Count);
+            Assert.IsFalse(result.Any((e) => e.Id > expectedCount));
+        }
+
+        [TestMethod()]
+        public async Task GetAsync_ShouldFind()
+        {
+            int expectedId = 1;
+
+            var result = await _instance.GetAsync(expectedId);
+
+            Assert.AreEqual(expectedId, result.Id);
+        }
+
+        [TestMethod()]
+        public async Task GetAsync_ShouldNotFind()
+        {
+            int expectedId = -1;
+
+            var result = await _instance.GetAsync(expectedId);
+
+            Assert.IsNull(result);
+        }
+
+
     }
 }
